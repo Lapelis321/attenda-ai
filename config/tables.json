@@ -1,0 +1,15 @@
+{
+  "zones": [
+    {
+      "id": "table_1",
+      "name": "Table 1",
+      "polygon": []
+    },
+    {
+      "id": "table_2",
+      "name": "Table 2",
+      "polygon": []
+    }
+  ],
+  "occupancy_seconds_before_alert": 120
+}
