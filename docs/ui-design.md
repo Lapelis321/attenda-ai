@@ -69,3 +69,27 @@ Admin triggers Take order → waiter gets task → opens optional steps → ente
 First pass only when two browser clients share task state, phone UI is understandable, completion and reset work, and the demo repeats. Do not add speech/table auto-discovery until this passes.
 
 Canonical plan: https://app.notion.com/p/4167a1f4b8b58180be50cc5a281fb707
+
+## Research-backed interaction rules (12 November)
+
+**Product distinction:** Toast already provides food-ready handheld notifications and Square provides editable floor plans. Attenda's demo differentiator is contextual task instructions and *suggested* low-friction table setup, not claiming that notifications or floor plans are novel.
+
+Sources: [Toast KDS](https://pos.toasttab.com/hardware/kitchen-display-system), [Square floor plans](https://squareup.com/help/us/en/article/6427-building-your-floor-plan), [Nielsen Norman Group progressive disclosure](https://www.nngroup.com/articles/progressive-disclosure/), [WCAG target sizes](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum).
+
+### Quality checklist (for every Codex UI change)
+
+- At 360px width, one task and its primary action are visible without horizontal scrolling.
+- A new user can find Table 1, understand what to do, reveal optional steps and complete the task with no explanation from us.
+- Only one visually dominant primary action per waiter screen. Secondary actions must be lower emphasis and accurately labeled.
+- Keep a consistent spacing rhythm (8/16/24/32px), 16px+ body text, 24–28px task title, 44px+ controls and visible focus.
+- No decorative gradients, glassmorphism, fake analytics, unnecessary tabs, random emojis or controls whose actions are placeholders.
+- A network/API failure displays a real error and offers retry instead of pretending success; a disconnected waiter must not mark task done locally without server acknowledgment.
+- The admin is allowed more information but initially shows only: camera + editable tables, selected-table action buttons, queue/history.
+- A first-run camera setup needs at most three named stages: choose source, review suggested table boxes/numbers, save and start. Add/rename/remove/manual draw remain discoverable.
+- Clear event source chips: SIMULATED KITCHEN, CAMERA SUGGESTION, WAITER REPORTED. Do not use source badges as proof of actual service.
+- No 'Order sent' for a transcript-only draft, no audio capture without a visible start/stop action and consent, no faux Android push notifications when the app only polls while open.
+- The visual result should be checked against real screenshots on both desktop and Redmi Android phone, not inferred from CSS alone.
+
+### User test with a helper (record observations, not invented results)
+
+Ask a person who has not seen Attenda to open the waiter interface. Without instruction, observe whether they identify the table, read the action, expand help, and report completion. Note misunderstood labels, mis-taps and hesitation. Do not claim training-time or error-rate reduction without measurement.
