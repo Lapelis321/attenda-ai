@@ -50,9 +50,9 @@ Order screen: explicit Start recording / Stop recording with consent; editable t
 Header: ATTENDA AI | DEMO MODE
 Left panel: camera/MP4 preview, suggested table boxes and provisional numbers, editable/drag-adjustable/add/remove table boxes.
 Right panel: Table 1 selector; [Send take-order task]; [Simulate order ready]; [Reset demo].
-Below: active tasks and event history, showing precise source labels: 'SIMULATED KITCHEN' or 'CAMERA SUGGESTION'. Display task state OPEN / IN PROGRESS / DONE.
+Below: active tasks and event history, showing precise source labels: 'SIMULATED KITCHEN' or 'CAMERA SUGGESTION'. Display task state NEW / IN PROGRESS / DONE.
 
-Quick setup: choose camera/video → Suggest tables → Review/adjust → Start demo. Candidate detection may use dining-table boxes, but user can manually draw at least one table when detection fails. Table numbering is provisional (e.g. left-to-right). The camera cannot know actual restaurant table IDs.
+Quick setup has three visible stages: Choose camera/video → Review suggested and manually editable tables → Save and start. Suggestion generation occurs inside the review stage. Candidate detection may use dining-table boxes, but user can manually draw at least one table when detection fails. Table numbering is provisional (e.g. left-to-right). The camera cannot know actual restaurant table IDs.
 
 ## Responsive and resilience
 - Test phone at 360px and desktop at 1280px.
@@ -93,3 +93,15 @@ Sources: [Toast KDS](https://pos.toasttab.com/hardware/kitchen-display-system), 
 ### User test with a helper (record observations, not invented results)
 
 Ask a person who has not seen Attenda to open the waiter interface. Without instruction, observe whether they identify the table, read the action, expand help, and report completion. Note misunderstood labels, mis-taps and hesitation. Do not claim training-time or error-rate reduction without measurement.
+
+## Approved UX additions — 13 November 2026 (pre-M1 audit)
+
+**One recommended task + selectable queue:** The prominent task card is the recommended task by default, but a waiter can expand "All tasks" and choose any other NEW or IN_PROGRESS task. Selection must not change, delete or complete unrelated tasks. When viewing a nonrecommended task, a small reminder identifies the current recommended table. Other tasks stay visible in the queue. This avoids both forced automation and distracting multiple dominant CTAs.
+
+**Priority semantics:** The recommended task is selected deterministically using documented task-type base priority, elapsed age since server-stored task creation and a stable tie-break. An aging task may show an understated "Needs attention" indicator. Task age must not be labeled time since guest arrived, time unserved or camera-derived waiting. Use understandable labels instead of a magical numeric AI score. No automatically generated push notification when the browser is closed.
+
+**Shared task/state contract:** NEW → IN_PROGRESS → DONE. IDs stable. Origin labels: SIMULATED KITCHEN, MANAGER DEMO, CAMERA SUGGESTION (M2 only), WAITER REPORTED completion. Server acknowledges state mutations, and duplicate active tasks of the same table/type are rejected or reused. Allow distinct types for same table. Reset demo clears tasks/history but preserves approved table layout. Offline API failure must not produce local fake success.
+
+**Map/navigation (M2, not required for M1 release):** A discoverable "Restaurant map" action shows simplified relative table positions and current table/task labels derived from the manager-reviewed, persisted table configuration. Support manual corrections. One perspective camera is not an exact building blueprint. Do not display a live "You are here" marker or attempt employee/person tracking or staff identification in this hackathon. M1 can reserve the data contract, but should not expose inactive or fake map controls.
+
+**Priority of delivery:** First working M1 backend + waiter/admin cross-browser flow, then selectable queue + simple priority, then manual phone QA. Camera suggestions and mapped zones are M2; voice/order recognition is M3. UX proposals are not evidence of implemented features. Do not begin M2/M3 until M1 passes its human two-client gate.
