@@ -1,0 +1,5 @@
+# Planned MVP dependencies (versions and compatibility to be validated)
+ultralytics
+opencv-python
+streamlit
+numpy
