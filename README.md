@@ -16,7 +16,7 @@ Attenda AI is a solo MVP for Unfair Weekend 2026. It aims to guide inexperienced
 **Support modules (in priority order)**
 - Reuse the current OpenCV/YOLO11n person detector to observe occupied tables from one *consented* camera or MP4.
 - Fast setup: select source, suggest possible table zones/numbers **if reliable**, and allow manual editing and one-table fallback.
-- Optional explicit **press-to-transcribe** order capture, with reviewed editable text and typed fallback. Lithuanian/English are proposed; language choice and browser support remain to be tested.
+- Desired explicit **press-to-transcribe** order capture with automatic spoken-language detection where tested, a reviewed editable transcript, simple pizza/pasta order-item suggestions and typed fallback. The demo interface is **English only**. Speech recognition and automatic language detection remain unverified until run on the target devices.
 - Optional occupancy-derived **suggested** task; camera proximity cannot verify service or that an order was taken.
 
 **Not in the hackathon MVP:** production POS/KDS integrations, real automated order submission, payments, facial recognition, employee identification, covert audio/video collection, multi-camera tracking or custom model training.
@@ -25,7 +25,7 @@ Attenda AI is a solo MVP for Unfair Weekend 2026. It aims to guide inexperienced
 
 - The repository contains a runnable person-detection *smoke test* in `app/detector.py` for authorized camera/video input; the user has visually confirmed detections in a local run.
 - Waiter task app, manager-event simulator, table automation, transcription and integrated dashboard are **not yet verified as implemented**.
-- An implementation checklist is tracked in [GitHub issue #2](https://github.com/Lapelis321/attenda-ai/issues/2) and the [Notion technical brief](https://app.notion.com/p/4157a1f4b8b5815b8318c8ecd96ba9bf).
+- Implementation is tracked in [M1 core app #2](https://github.com/Lapelis321/attenda-ai/issues/2), [M2 camera/table setup #3](https://github.com/Lapelis321/attenda-ai/issues/3), [M3 speech/order draft #4](https://github.com/Lapelis321/attenda-ai/issues/4), [the Notion execution plan](https://app.notion.com/p/4167a1f4b8b58180be50cc5a281fb707) and the [UI design specification](docs/ui-design.md).
 
 ## Existing local detection smoke test (Windows)
 
