@@ -1,37 +1,50 @@
-# Attenda
+# Attenda AI — Your AI Waiter Copilot
 
-**Every table deserves attention.**
+**A first-time waiter gets a smartphone and a clear next step.**
 
-Attenda is a camera-based restaurant service assistant developed for **Unfair Weekend 2026**. Its MVP aims to detect people in defined table zones, track how long a table has been occupied, and flag tables that may need staff attention.
+Attenda AI is a solo MVP for Unfair Weekend 2026. It aims to guide inexperienced restaurant staff through table-service workflows using contextual tasks, camera-based observations and eventually integrations with restaurant systems. The product pitch is faster onboarding and more consistent service, **not** that AI replaces hospitality or required food-safety training.
 
-## MVP scope
+## Approved hackathon MVP (pivot: 12 November 2026)
 
-- One consented camera feed or video file
-- One or two configurable table zones
-- Pretrained person detection (YOLO11n)
-- Occupancy timers and automatic attention alerts
-- Simple live dashboard
+**First executable scenario**
+1. Open a responsive **waiter task screen** and a **manager/demo panel** on separate devices or browser sessions.
+2. The demo panel simulates **"Order ready — Table 1"** (no real kitchen integration).
+3. The waiter sees **"Pick up the order and deliver it to Table 1."**
+4. Waiter taps **Done**; both views reflect completion.
+5. A second simulated event can direct the waiter to **take an order**.
 
-Staff-approach inference is optional. An observed approach **does not establish that service was completed**.
+**Support modules (in priority order)**
+- Reuse the current OpenCV/YOLO11n person detector to observe occupied tables from one *consented* camera or MP4.
+- Fast setup: select source, suggest possible table zones/numbers **if reliable**, and allow manual editing and one-table fallback.
+- Optional explicit **press-to-transcribe** order capture, with reviewed editable text and typed fallback. Lithuanian/English are proposed; language choice and browser support remain to be tested.
+- Optional occupancy-derived **suggested** task; camera proximity cannot verify service or that an order was taken.
 
-## Planned stack
+**Not in the hackathon MVP:** production POS/KDS integrations, real automated order submission, payments, facial recognition, employee identification, covert audio/video collection, multi-camera tracking or custom model training.
 
-Python, Ultralytics YOLO11n, OpenCV and Streamlit. Dependencies and integration are not yet validated.
+## Current verified status
 
-## Local setup
+- The repository contains a runnable person-detection *smoke test* in `app/detector.py` for authorized camera/video input; the user has visually confirmed detections in a local run.
+- Waiter task app, manager-event simulator, table automation, transcription and integrated dashboard are **not yet verified as implemented**.
+- An implementation checklist is tracked in [GitHub issue #2](https://github.com/Lapelis321/attenda-ai/issues/2) and the [Notion technical brief](https://app.notion.com/p/4157a1f4b8b5815b8318c8ecd96ba9bf).
 
-1. Clone the repository.
-2. Create a Python virtual environment.
-3. Install dependencies from `requirements.txt` (once validated).
-4. Configure table polygons in `config/tables.json`.
-5. Provide a consented local video or camera stream.
+## Existing local detection smoke test (Windows)
 
-**Current status:** repository scaffolding only. Detection, alerting and dashboard functions are not yet implemented or tested.
+Use a virtual environment with the dependencies from `requirements.txt` and an existing local YOLO11n weights file in `~/DevEnvs/ModelCache/yolo11n.pt`.
 
-## Privacy
+```powershell
+python -m app.detector --source "path/to/consented-video.mp4"
+# or a camera index:
+python -m app.detector --source 0
+```
 
-Do not commit identifiable restaurant footage, credentials, local model weights or personal data. For demos, use consented footage and process it locally where feasible.
+Press `q` in the video window to stop. This script draws person boxes only; it does not yet infer table service. Use the actual file path on your Windows machine.
 
-## Hackathon deliverables
+## Technology and licensing
 
-Working prototype, public GitHub repository, demonstration video (maximum 3 minutes), and Devpost submission.
+Python, OpenCV and pretrained Ultralytics YOLO11n are already used for detection. The responsive task web app has not been merged yet. Ultralytics software/weights have **AGPL-3.0 or enterprise licensing** implications: review licence obligations before redistributing or commercializing. No paid cloud inference dependency is assumed.
+
+## Demo and privacy
+
+Use explicitly consented staged footage and voice from participating people, not real patrons without authorization. Do not commit audio, identifiable footage, model weights, credentials or private data. Simulated kitchen events must be labeled as simulated. Human review is required before any order confirmation.
+
+Required deliverables: working prototype, reviewer-accessible GitHub repository, demonstration video **maximum 3 minutes** and completed Devpost submission. Personal target: **14 November 2026 18:00 Europe/Vilnius**; official deadline **20:00**.
