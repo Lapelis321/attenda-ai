@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attenda AI — Admin</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='m1-final') }}">
+</head>
+<body>
+  <header class="topbar">
+    <strong>ATTENDA AI</strong>
+    <span class="demo-badge">DEMO MODE</span>
+    <span id="connection" class="connection" role="status">Connecting…</span>
+  </header>
+  <main class="admin-shell">
+    <div id="error" class="error" role="alert" hidden>
+      <span id="error-message">Could not reach Attenda. The requested action was not confirmed.</span>
+      <button type="button" class="button secondary" id="retry">Retry</button>
+    </div>
+    <div id="action-status" class="action-status toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    <section class="admin-grid">
+      <article class="panel preview-panel">
+        <p class="eyebrow">CAMERA SETUP</p>
+        <h1>Reserved for M2</h1>
+        <p>Camera onboarding and editable table zones are intentionally not part of M1. The existing table configuration is preserved.</p>
+      </article>
+      <article class="panel controls-panel">
+        <p class="eyebrow">SIMULATED EVENTS</p>
+        <label for="table-select">Table</label>
+        <select id="table-select"></select>
+        <button type="button" class="button primary" id="deliver">Simulate kitchen: Order ready</button>
+        <button type="button" class="button secondary" id="take-order">Send take-order task</button>
+        <button type="button" class="button danger" id="reset">Reset demo</button>
+        <p class="policy-note">Local demo controls only. Do not expose this admin page through a public tunnel.</p>
+      </article>
+    </section>
+    <section class="data-grid">
+      <article class="panel">
+        <div class="section-heading"><h2>Active queue</h2><span id="active-count">0</span></div>
+        <div id="active-list" class="record-list"></div>
+      </article>
+      <article class="panel">
+        <div class="section-heading"><h2>Completed history</h2><span id="history-count">0</span></div>
+        <div id="history-list" class="record-list"></div>
+      </article>
+    </section>
+    <section class="panel">
+      <h2>Event history</h2>
+      <div id="event-list" class="record-list"></div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='admin.js', v='m1-final') }}" defer></script>
+</body>
+</html>

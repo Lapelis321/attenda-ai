@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attenda AI — Waiter</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='m1-final') }}">
+</head>
+<body class="waiter-page">
+  <header class="topbar compact">
+    <a class="brand" href="/waiter" aria-label="Attenda waiter home">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>Attenda</span>
+    </a>
+    <span id="connection" class="connection" role="status" data-state="connecting">Reconnecting…</span>
+  </header>
+  <main class="waiter-shell" data-ready="false">
+    <section aria-labelledby="next-step-heading">
+      <p class="context-caption" id="next-step-heading">Your next step</p>
+      <div id="error" class="error" role="alert" hidden>
+        <span id="error-message">Could not reach Attenda. Nothing was changed.</span>
+        <button type="button" class="button secondary" id="retry">Retry</button>
+      </div>
+      <div id="action-status" class="action-status toast" role="status" aria-live="polite" aria-atomic="true"></div>
+      <article id="task-card" class="task-card" hidden>
+        <div class="task-meta">
+          <span id="task-number"></span>
+          <span id="attention" class="attention" hidden>Needs attention</span>
+        </div>
+        <div id="task-summary">
+          <p id="table-name" class="table-name"></p>
+          <h1 id="task-title"></h1>
+          <p id="task-description" class="task-description"></p>
+          <div class="task-context" aria-label="Task details">
+            <span id="task-source"></span>
+            <span id="task-age"></span>
+          </div>
+          <p id="recommendation-reminder" class="reminder" hidden></p>
+          <button type="button" class="disclosure" id="show-steps" aria-expanded="false">
+            <span>Show steps</span><span class="chevron" aria-hidden="true"></span>
+          </button>
+          <ol id="steps" class="steps" hidden></ol>
+          <section id="confirmed-state" class="confirmed-state" aria-labelledby="confirmed-heading" hidden>
+            <div class="confirmed-heading">
+              <div><p class="confirmed-kicker">Confirmed order</p><h2 id="confirmed-heading">Ready to finish</h2></div>
+              <button type="button" class="edit-draft" id="edit-draft">Edit draft</button>
+            </div>
+            <ul id="confirmed-summary" class="confirmed-summary"></ul>
+            <p class="confirmed-policy">Recorded in Attenda only. Nothing was sent to a kitchen or POS.</p>
+          </section>
+          <button type="button" class="button primary full" id="task-action" aria-describedby="confirmation-note"></button>
+          <p class="confirmation-note" id="confirmation-note"></p>
+        </div>
+        <section id="order-editor" class="order-editor" aria-labelledby="order-heading" hidden>
+          <button type="button" class="back-action" id="back-to-task">Back to task</button>
+          <div class="editor-heading">
+            <div><p id="order-context" class="editor-context"></p><h2 id="order-heading">Type order</h2></div>
+            <span id="draft-state" class="chip">Not saved</span>
+          </div>
+          <p class="policy-note">Type only what the guest confirms. This draft is not sent to a kitchen or POS.</p>
+          <div id="order-items"></div>
+          <p id="empty-order" class="empty-order">No items yet. Add an item to begin.</p>
+          <button type="button" class="button secondary full" id="add-item">Add item</button>
+          <div class="suggestions" aria-label="Common dish suggestions">
+            <span>Suggestions</span>
+            <button type="button" class="suggestion" data-dish="Pizza">Add pizza</button>
+            <button type="button" class="suggestion" data-dish="Pasta">Add pasta</button>
+            <button type="button" class="suggestion" data-dish="Water">Add water</button>
+          </div>
+          <div class="editor-actions" aria-label="Draft actions">
+            <button type="button" class="button primary full" id="save-draft">Save draft</button>
+            <button type="button" class="button secondary full" id="confirm-draft">Review and confirm draft</button>
+            <p id="draft-guidance" class="confirmation-note">Add an item, then save the draft.</p>
+          </div>
+        </section>
+      </article>
+      <article id="idle" class="task-card idle" hidden>
+        <h1>You’re all caught up.</h1>
+        <p>Wait for your next task. This page updates while it remains open.</p>
+      </article>
+    </section>
+
+    <section id="up-next" class="up-next" aria-labelledby="up-next-heading" hidden>
+      <div class="up-next-heading">
+        <h2 id="up-next-heading">Up next</h2>
+        <span id="up-next-count"></span>
+      </div>
+      <div id="up-next-list" class="up-next-list"></div>
+    </section>
+
+    <section class="queue-section">
+      <button type="button" class="queue-toggle" id="queue-toggle" aria-expanded="false">
+        <span id="queue-count">All tasks (0)</span><span class="chevron" aria-hidden="true"></span>
+      </button>
+      <div id="queue-panel" hidden>
+        <p class="policy-note">Choose a task to view it. Selecting does not start or complete anything.</p>
+        <ul id="task-list" class="task-list"></ul>
+      </div>
+    </section>
+  </main>
+  <template id="order-item-template">
+    <fieldset class="order-item">
+      <legend>Order item</legend>
+      <label>Item name<input name="dish_name" maxlength="100" required autocomplete="off"></label>
+      <label>Quantity<input name="quantity" type="number" min="1" max="99" step="1" value="1" required inputmode="numeric"></label>
+      <label class="notes-field">Notes (optional)<input name="notes" maxlength="300" autocomplete="off"></label>
+      <button type="button" class="remove-item">Remove item</button>
+    </fieldset>
+  </template>
+  <script src="{{ url_for('static', filename='waiter.js', v='m1-final') }}" defer></script>
+</body>
+</html>

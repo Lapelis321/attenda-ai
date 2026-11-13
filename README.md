@@ -1,50 +1,88 @@
-# Attenda AI — Your AI Waiter Copilot
+# Attenda AI — M1 waiter workflow
 
-**A first-time waiter gets a smartphone and a clear next step.**
+Attenda AI M1 is a local Flask and SQLite demo for coordinating waiter tasks. A manager can create simulated delivery or take-order tasks, and the mobile waiter view receives them through foreground polling. It is a hackathon prototype, not a production restaurant system.
 
-Attenda AI is a solo MVP for Unfair Weekend 2026. It aims to guide inexperienced restaurant staff through table-service workflows using contextual tasks, camera-based observations and eventually integrations with restaurant systems. The product pitch is faster onboarding and more consistent service, **not** that AI replaces hospitality or required food-safety training.
+## What M1 implements
 
-## Approved hackathon MVP (pivot: 12 November 2026)
+- Manager demo at `/admin` with Table 1 and Table 2, simulated order-ready events, take-order task creation, live task/history/event views, duplicate suppression and demo reset.
+- Mobile waiter workflow at `/waiter` with connection state, deterministic recommendation, Up next preview, selectable All tasks queue, valid start/complete transitions and retryable errors.
+- Typed order drafts with editable dish name, quantity and notes; SQLite persistence; explicit save, review and confirmation; editing invalidates confirmation; completion is blocked until the current draft is confirmed.
+- Deterministic priority: delivery base 100, take-order base 80, plus one point per elapsed task minute. Ties use creation time and task ID.
+- A separate `app/detector.py` person-detection smoke test retained for authorized local input. It is not integrated with M1 task creation.
 
-**First executable scenario**
-1. Open a responsive **waiter task screen** and a **manager/demo panel** on separate devices or browser sessions.
-2. The demo panel simulates **"Order ready — Table 1"** (no real kitchen integration).
-3. The waiter sees **"Pick up the order and deliver it to Table 1."**
-4. Waiter taps **Done**; both views reflect completion.
-5. A second simulated event can direct the waiter to **take an order**.
+M1 does not implement camera/table automation, speech recognition, transcription, kitchen/POS submission, payments, authentication or public deployment. All manager events are visibly simulated. Order confirmation records human review only.
 
-**Support modules (in priority order)**
-- Reuse the current OpenCV/YOLO11n person detector to observe occupied tables from one *consented* camera or MP4.
-- Fast setup: select source, suggest possible table zones/numbers **if reliable**, and allow manual editing and one-table fallback.
-- Desired explicit **press-to-transcribe** order capture with automatic spoken-language detection where tested, a reviewed editable transcript, simple pizza/pasta order-item suggestions and typed fallback. The demo interface is **English only**. Speech recognition and automatic language detection remain unverified until run on the target devices.
-- Optional occupancy-derived **suggested** task; camera proximity cannot verify service or that an order was taken.
+Source documents: [M1 Issue #2](https://github.com/Lapelis321/attenda-ai/issues/2) and [UI design](docs/ui-design.md).
 
-**Not in the hackathon MVP:** production POS/KDS integrations, real automated order submission, payments, facial recognition, employee identification, covert audio/video collection, multi-camera tracking or custom model training.
+## Windows setup
 
-## Current verified status
-
-- The repository contains a runnable person-detection *smoke test* in `app/detector.py` for authorized camera/video input; the user has visually confirmed detections in a local run.
-- Waiter task app, manager-event simulator, table automation, transcription and integrated dashboard are **not yet verified as implemented**.
-- Implementation is tracked in [M1 core app #2](https://github.com/Lapelis321/attenda-ai/issues/2), [M2 camera/table setup #3](https://github.com/Lapelis321/attenda-ai/issues/3), [M3 speech/order draft #4](https://github.com/Lapelis321/attenda-ai/issues/4), [the Notion execution plan](https://app.notion.com/p/4167a1f4b8b58180be50cc5a281fb707) and the [UI design specification](docs/ui-design.md).
-
-## Existing local detection smoke test (Windows)
-
-Use a virtual environment with the dependencies from `requirements.txt` and an existing local YOLO11n weights file in `~/DevEnvs/ModelCache/yolo11n.pt`.
+Prerequisites: Python 3.10 or newer, Node.js/npm and Microsoft Edge.
 
 ```powershell
-python -m app.detector --source "path/to/consented-video.mp4"
-# or a camera index:
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+npm ci
+```
+
+No cloud service or API key is required. Do not commit `.env` files, runtime databases, recordings, private media or model weights.
+
+## Start the application
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m app.web
+```
+
+Open `http://127.0.0.1:5000/admin` and `http://127.0.0.1:5000/waiter` in separate browser sessions. Runtime state is stored in ignored `instance/attenda.sqlite3`. Reset clears demo tasks, drafts and history while preserving `config/tables.json`.
+
+The development server binds only to `127.0.0.1`. Do not expose it through a tunnel or deploy it publicly: M1 admin and task APIs are unauthenticated, the reset confirmation phrase is an accidental-action guard rather than authentication, and the Flask development server is not production hardened.
+
+## Run verification
+
+Python regression suite:
+
+```powershell
+python -m pytest -q --basetemp=.pytest-m1 -p no:cacheprovider
+```
+
+Real Microsoft Edge suite at the configured 360×800 waiter and 1280×800 admin viewports:
+
+```powershell
+.\node_modules\.bin\playwright.cmd test --reporter=line
+```
+
+Playwright starts the local app automatically using `playwright.config.js`. The suite uses the installed Edge channel (`msedge`), separate manager/waiter browser contexts, real UI interactions and generated screenshots under ignored `qa/`.
+
+Additional release checks:
+
+```powershell
+python -m compileall -q app tests
+node --check app\static\waiter.js
+node --check app\static\admin.js
+node --check e2e\waiter-recovery.spec.js
+python -m pip check
+git diff --check
+```
+
+## Detector smoke test (not M1 integration)
+
+With a local YOLO11n weights file and explicitly consented camera/video input:
+
+```powershell
+python -m app.detector --source "path\to\consented-video.mp4"
 python -m app.detector --source 0
 ```
 
-Press `q` in the video window to stop. This script draws person boxes only; it does not yet infer table service. Use the actual file path on your Windows machine.
+Press `q` to stop. This draws person boxes only; it does not infer occupancy, service completion or guest intent.
 
-## Technology and licensing
+## Limitations, privacy and licensing
 
-Python, OpenCV and pretrained Ultralytics YOLO11n are already used for detection. The responsive task web app has not been merged yet. Ultralytics software/weights have **AGPL-3.0 or enterprise licensing** implications: review licence obligations before redistributing or commercializing. No paid cloud inference dependency is assumed.
+- Physical Android/device testing and a live two-device review still require human verification.
+- Foreground polling is used; there are no push notifications or background guarantees.
+- SQLite and the local Flask server are suitable for this demo, not multi-user production load.
+- Use only consented staged media. Never use covert audio/video or infer allergens, modifications or quantities.
+- Ultralytics software and weights have AGPL-3.0 or enterprise licensing implications. Review obligations before redistribution or commercial use.
+- This repository currently has no project-level license file; no redistribution rights should be assumed.
 
-## Demo and privacy
-
-Use explicitly consented staged footage and voice from participating people, not real patrons without authorization. Do not commit audio, identifiable footage, model weights, credentials or private data. Simulated kitchen events must be labeled as simulated. Human review is required before any order confirmation.
-
-Required deliverables: working prototype, reviewer-accessible GitHub repository, demonstration video **maximum 3 minutes** and completed Devpost submission. Personal target: **14 November 2026 18:00 Europe/Vilnius**; official deadline **20:00**.
+M2 may integrate authorized camera/table setup. M3 may explore explicit press-to-transcribe input with human review. Neither capability is part of M1.

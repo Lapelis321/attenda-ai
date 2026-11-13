@@ -1,5 +1,9 @@
-# Planned MVP dependencies (versions and compatibility to be validated)
+# Runtime dependencies
+Flask>=3.1,<4
 ultralytics
 opencv-python
 streamlit
 numpy
+
+# Deterministic application tests
+pytest>=8,<10

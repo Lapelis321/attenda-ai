@@ -15,4 +15,35 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
+.test-tmp*/
+.pytest-*/
+pytest-cache-files-*/
 .streamlit/secrets.toml
+.coverage
+htmlcov/
+
+# Local agent and JavaScript tool caches
+.agents/
+node_modules/
+skills-lock.json
+
+# Browser test output and generated QA evidence
+test-results/
+playwright-report/
+blob-report/
+qa/
+
+# Local interim verification notes superseded by docs/M1_FINAL_VERIFICATION.md
+docs/overnight-m1-report.md
+docs/overnight-independent-checks.txt
+
+# Local Flask/SQLite runtime state
+instance/
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.sqlite3-journal
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
